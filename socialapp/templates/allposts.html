@@ -5,19 +5,19 @@
 <div style="border: 3px solid rgb(149, 143, 143);padding: 20px;border-radius: 20px;" class="post-preview">
     <a href="post.html">
         <p class="post-meta">
-            <a href="#!"><h3>{{p.user}}</h3></a> 
+            <a href="#!"><h3>{{p.user}}</h3></a>
              Posted on {{p.created_date}}
         </p>
         <hr class="my-4" /> 
         <h2 class="post-title">{{p.post}}</h2>
         <a href="{%url 'add-likes' p.id%}" class="btn btn-sm btn-info">{{p.likes.all.count}} &#10084;</a>
-
-        <h3 class="post-title">{{p.image}}</h3>
+        {{p.image}}
+        <!-- <img class="post-title">{{p.image}}</img> -->
     </a>
     <div>
         <p>
             <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample{{ forloop.counter }}" aria-expanded="false" aria-controls="collapseExample">
-                ADD COMMENT
+                ADD COMMENTS
             </button>
 
             <button class="btn btn-sm btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#answerlist{{ forloop.counter }}" aria-expanded="false" aria-controls="collapseExample">
@@ -37,7 +37,7 @@
           <div class="collapse" id="answerlist{{ forloop.counter }}">
             <div class="card card-body">
                  <ul class="list-group">
-                     {%for cmt in p.fetch_comments%}
+                    {%for cmt in p.fetch_comments%}
                         <li class="list-group-item"><strong>{{cmt.comment}}</strong>
                             <a href="{%url 'add-cmtlikes' cmt.id%}" class="btn btn-sm btn-info">{{cmt.cmt_likes.all.count}} &#10084;</a>
 

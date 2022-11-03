@@ -5,6 +5,7 @@
 <div style="border: 3px solid rgb(149, 143, 143);padding: 20px;border-radius: 20px;" class="post-preview">
     <a href="post.html">
         <p class="post-meta">
+            <a style="color: red;margin-left: 500px;" href="{%url 'post-delete' p.id %}" class="material-icons">delete</a>
             <a href="#!"><h3>{{p.user}}</h3></a>
             Posted on {{p.created_date}}
         </p>
@@ -13,7 +14,7 @@
         <h2 class="post-title">{{p.post}}</h2>
         <a href="{%url 'add-likes' p.id%}" class="btn btn-sm btn-info">{{p.likes.all.count}} &#10084;</a>
 
-        <h3 class="post-subtitle">{{p.image}}</h3>
+        {{p.image}}
     </a>
     <div>
         <p>

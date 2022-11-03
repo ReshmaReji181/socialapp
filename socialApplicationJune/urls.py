@@ -28,5 +28,6 @@ urlpatterns = [
     path('social/myposts',views.MyPosts.as_view(),name="myposts"),
     path('social/logout',views.sign_out,name="signout"),
     path('social/posts/<int:id>/likes',views.post_likes,name="add-likes"),
+    path('social/myposts/<int:id>/delete',views.post_delete,name="post-delete"),
 
 ]

@@ -9,9 +9,19 @@ from django.contrib.auth import authenticate,login,logout
 from django.urls import reverse_lazy
 from django.contrib import messages
 from socialapp.models import Posts,Comments
-
+from django.views.decorators.cache import never_cache
+from django.utils.decorators import method_decorator
 # Create your views here.
+def signin_required(fn):
+    def wrapper(request,*args,**kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request,"U MUST LOGIN TO PERFORM THIS ACTION")
+            return redirect("signin")
+        else:
+            return fn(request,*args,**kwargs)
+    return wrapper
 
+decs=[signin_required,never_cache]
 class SignUpView(CreateView):
     model=User
     form_class=RegistrationForm
@@ -40,6 +50,7 @@ class LoginView(FormView):
                 messages.error(request,"LOGIN FAILED")
                 return render(request,self.template_name,{"form":form})
 
+@method_decorator(decs,name="dispatch")
 class HomeView(CreateView):
     template_name: str="home.html"
     model=Posts
@@ -51,6 +62,7 @@ class HomeView(CreateView):
         form.instance.user=self.request.user
         return super().form_valid(form) 
 
+@method_decorator(decs,name="dispatch")
 class PostList(ListView):
     template_name="allposts.html"
     model=Posts
@@ -59,27 +71,34 @@ class PostList(ListView):
     def get_queryset(self):
         return Posts.objects.all().exclude(user=self.request.user)
 
+decs
 def add_comment(request,*args,**kwargs):
     p_id=kwargs.get("id") 
     pst=Posts.objects.get(id=p_id)
     cmt=request.POST.get("comment")  
     pst.comments_set.create(comment=cmt,user=request.user)
+    messages.success(request,"COMMENT ADDED SUCCESS")
     return redirect("home") 
 
+decs
 def add_commentlikes(request,*args,**kwargs):
     cmt_id=kwargs.get("id")
     cmt=Comments.objects.get(id=cmt_id)
     cmt.cmt_likes.add(request.user)
     cmt.save()
+    messages.success(request,"ADDED COMMENT LIKES SUCCESS")
     return redirect("home")
 
+decs
 def post_likes(request,*args,**kwargs):
     pst_id=kwargs.get("id")
     pst=Posts.objects.get(id=pst_id)
     pst.likes.add(request.user)
     pst.save()
+    messages.success(request,"ADDED LIKES SUCCESS")
     return redirect("home")
 
+@method_decorator(decs,name="dispatch")
 class MyPosts(ListView):
     model=Posts
     template_name="myposts.html"
@@ -88,7 +107,15 @@ class MyPosts(ListView):
     def get_queryset(self):
         return Posts.objects.filter(user=self.request.user)
 
+decs
 def sign_out(request,*args,**kwargs):
     logout(request)
-    messages.success(request,"logout successfully")
+    messages.success(request,"LOGOUT SUCCESSFULLY")
     return redirect("signin")
+
+decs
+def post_delete(request,*args,**kwargs):
+    pst_id=kwargs.get("id")
+    Posts.objects.filter(id=pst_id).delete()
+    messages.success(request,"POST DELETED SUCCESSFULLY")
+    return redirect("myposts")
