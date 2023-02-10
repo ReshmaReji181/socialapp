@@ -10,7 +10,7 @@
         </p>
         <hr class="my-4" /> 
         <h2 class="post-title">{{p.post}}</h2>
-        <a href="{%url 'add-likes' p.id%}" class="btn btn-sm btn-info">{{p.likes.all.count}} &#10084;</a>
+        <a href="{%url 'add-likes' p.id%}" class="btn btn-sm btn-warning">{{p.likes.all.count}}like</a>     <!--&#10084;-->
         {{p.image}}
         <!-- <img class="post-title">{{p.image}}</img> -->
     </a>
